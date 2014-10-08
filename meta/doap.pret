@@ -1,0 +1,19 @@
+# This file contains general metadata about the project.
+
+@prefix : <http://usefulinc.com/ns/doap#>.
+
+`RDF-Generator-HTTP`
+	:programming-language "Perl" ;
+	:shortdesc            "Generate RDF from a HTTP request";
+	:homepage             <https://metacpan.org/release/RDF-Generator-HTTP>;
+	:download-page        <https://metacpan.org/release/RDF-Generator-HTTP>;
+	:bug-database         <http://rt.cpan.org/Dist/Display.html?Queue=RDF-Generator-HTTP>;
+#	:repository           [ a :GitRepository; :browse <https://github.com/kjetilk/p5-rdf-generator-http> ];
+	:created              2014-10-08;
+	:license              <http://dev.perl.org/licenses/>;
+	:maintainer           cpan:KJETILK;
+	:developer            cpan:KJETILK.
+
+<http://dev.perl.org/licenses/>
+	dc:title  "the same terms as the perl 5 programming language system itself".
+
