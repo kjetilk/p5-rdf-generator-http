@@ -1,14 +1,24 @@
 # This file contains general metadata about the project.
 
 @prefix : <http://usefulinc.com/ns/doap#>.
+@prefix prov: <http://www.w3.org/ns/prov#>.
+@prefix cpan-uri: <http://purl.org/NET/cpan-uri/terms#> .
 
 `RDF-Generator-HTTP`
 	:programming-language "Perl" ;
-	:shortdesc            "Generate RDF from a HTTP request";
+	:shortdesc            "Generate RDF from a HTTP request"@en;
 	:homepage             <https://metacpan.org/release/RDF-Generator-HTTP>;
 	:download-page        <https://metacpan.org/release/RDF-Generator-HTTP>;
-	:bug-database         <http://rt.cpan.org/Dist/Display.html?Queue=RDF-Generator-HTTP>;
-#	:repository           [ a :GitRepository; :browse <https://github.com/kjetilk/p5-rdf-generator-http> ];
+	:bug-database         <https://github.com/kjetilk/p5-rdf-generator-http/issues>;
+	:mailing-list         <http://lists.perlrdf.org/listinfo/dev> ;
+    	:wiki                 <http://wiki.perlrdf.org/> ;
+	cpan-uri:x_IRC        <irc://irc.perl.org/#perlrdf> ;
+	:repository           [ a :GitRepository; 
+			        :browse <https://github.com/kjetilk/p5-rdf-generator-http>;
+				prov:has_provenance <http://git2prov.org/git2prov?giturl=https%3A%2F%2Fgithub.com%2Fkjetilk%2FRDF-LinkedData&serialization=PROV-O#> 
+			      ];
+    	:category   	      <http://dbpedia.org/resource/Category:Semantic_Web>, 
+			      <http://dbpedia.org/resource/Category:Hypertext_Transfer_Protocol> ;
 	:created              2014-10-08;
 	:license              <http://dev.perl.org/licenses/>;
 	:maintainer           cpan:KJETILK;
