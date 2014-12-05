@@ -15,7 +15,7 @@
 	cpan-uri:x_IRC        <irc://irc.perl.org/#perlrdf> ;
 	:repository           [ a :GitRepository; 
 			        :browse <https://github.com/kjetilk/p5-rdf-generator-http>;
-				prov:has_provenance <http://git2prov.org/git2prov?giturl=https%3A%2F%2Fgithub.com%2Fkjetilk%2FRDF-LinkedData&serialization=PROV-O#> 
+				prov:has_provenance <http://git2prov.org/git2prov?giturl=https%3A%2F%2Fgithub.com%2Fkjetilk%2Fp5-rdf-generator-http&serialization=PROV-O#> 
 			      ];
     	:category   	      <http://dbpedia.org/resource/Category:Semantic_Web>, 
 			      <http://dbpedia.org/resource/Category:Hypertext_Transfer_Protocol> ;
