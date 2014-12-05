@@ -17,7 +17,7 @@ __END__
 
 =head1 NAME
 
-RDF::Generator::HTTP - Generate RDF from a HTTP request
+RDF::Generator::HTTP - Generate RDF from a HTTP message
 
 =head1 SYNOPSIS
 
@@ -26,7 +26,7 @@ RDF::Generator::HTTP - Generate RDF from a HTTP request
 =head1 BUGS
 
 Please report any bugs to
-L<http://rt.cpan.org/Dist/Display.html?Queue=RDF-Generator-HTTP>.
+L<https://github.com/kjetilk/p5-rdf-generator-http/issues>.
 
 =head1 SEE ALSO
 
