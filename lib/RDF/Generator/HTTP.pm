@@ -43,7 +43,7 @@ sub generate {
 		$model->add_statement(statement($ressubj, iri($ns->uri('http:status')), literal($self->message->code)));
 		$self->message->headers->scan(sub {
 				  my ($field, $value) = @_;
-				  $model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
+				  $model->add_statement(statement($ressubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
 			   });
 		if ($self->message->request) {
 			$model->add_statement(statement($reqsubj, iri($ns->uri('http:hasResponse')), $ressubj));

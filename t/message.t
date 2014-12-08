@@ -51,6 +51,7 @@ my $httph = RDF::Trine::Namespace->new('http://www.w3.org/2007/ont/httph#');
 	my $model = $g->generate;
 	isa_ok($model, 'RDF::Trine::Model');
 	has_predicate($httph->date->uri_value, $model, 'Date Predicate URI is found');
+	has_predicate($httph->content_type->uri_value, $model, 'Content-Type Predicate URI is found');
 	pattern_target($model);
 	my $pattern = RDF::Trine::Pattern->new(
 														statement(variable('req'), $rdf->type, $http->RequestMessage),
@@ -64,7 +65,8 @@ my $httph = RDF::Trine::Namespace->new('http://www.w3.org/2007/ont/httph#');
 														statement(variable('res'), $httph->content_type, literal('text/turtle;charset=UTF-8')),
 														statement(variable('res'), $httph->expires, literal('Thu, 14 Feb 2014 21:48:33 GMT')),
 														statement(variable('res'), $httph->last_modified, literal('Thu, 07 Feb 2014 20:48:33 GMT')),
-														statement(variable('res'), $httph->server, literal('Dahutomatic/4.2')));
+														statement(variable('res'), $httph->server, literal('Dahutomatic/4.2'))
+);
 
 	pattern_ok($pattern, 'Full pattern found');
 }
