@@ -4,6 +4,14 @@
 
 `RDF-Generator-HTTP`
 	:test-requirement       [ :on "Test::More 0.96"^^:CpanId ];
+	:test-requirement       [ :on "Test::RDF"^^:CpanId ];
+	:runtime-requirement    [ :on "Moo"^^:CpanId ];
+	:runtime-requirement    [ :on "Carp"^^:CpanId ];
+	:runtime-requirement    [ :on "RDF::Trine"^^:CpanId ];
+	:runtime-requirement    [ :on "URI::NamespaceMap"^^:CpanId ];
+	:runtime-requirement    [ :on "Types::Standard"^^:CpanId ];	
+	:runtime-requirement    [ :on "HTTP::Message"^^:CpanId ];	
+	:runtime-requirement    [ :on "URI"^^:CpanId ];	
 	:develop-recommendation [ :on "Dist::Inkt 0.001"^^:CpanId ];
 	.
 
