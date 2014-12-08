@@ -16,9 +16,9 @@ use Types::Standard qw(InstanceOf ArrayRef Str);
 
 has message => (is => 'ro', isa => InstanceOf['HTTP::Message'], required => 1);
 
-has blacklist => (is => 'rw', isa => ArrayRef[Str]);
+has blacklist => (is => 'rw', isa => ArrayRef[Str], predicate => 'has_blacklist');
 
-has whitelist => (is => 'rw', isa => ArrayRef[Str]);
+has whitelist => (is => 'rw', isa => ArrayRef[Str], predicate => 'has_whitelist');
 
 has ns => (is => 'ro', isa => InstanceOf['URI::NamespaceMap'], lazy => 1, builder => '_build_namespacemap');
 
@@ -40,21 +40,27 @@ sub generate {
 		$self->_request_statements($model, $self->message, $reqsubj);
 		$self->message->headers->scan(sub {
 				my ($field, $value) = @_;
-				$model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
+				if ($self->ok_to_add($field)) {
+					$model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
+				}
 			 });
 	} elsif ($self->message->isa('HTTP::Response')) {
 		$model->add_statement(statement($ressubj, iri($ns->uri('rdf:type')), iri($ns->uri('http:ResponseMessage'))));
 		$model->add_statement(statement($ressubj, iri($ns->uri('http:status')), literal($self->message->code)));
 		$self->message->headers->scan(sub {
 				  my ($field, $value) = @_;
-				  $model->add_statement(statement($ressubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
+				  if ($self->ok_to_add($field)) {
+					  $model->add_statement(statement($ressubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
+				  }
 			   });
 		if ($self->message->request) {
 			$model->add_statement(statement($reqsubj, iri($ns->uri('http:hasResponse')), $ressubj));
 			$self->_request_statements($model, $self->message->request, $reqsubj);
 			$self->message->request->headers->scan(sub {
 				my ($field, $value) = @_;
-				$model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
+				if ($self->ok_to_add($field)) {
+					$model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
+				}
 			 });
 		}
 	} else {
@@ -62,6 +68,30 @@ sub generate {
 	}
 	return $model;
 }
+
+sub ok_to_add {
+	my ($self, $field) = @_;
+	unless ($self->has_blacklist or $self->has_whitelist) {
+		return 1;
+	}
+	if ($self->has_blacklist) {
+		foreach my $entry (@{$self->blacklist}) {
+			if ($entry eq $field) {
+				return 0;
+			}
+		}
+		return 1;
+	}
+	if ($self->has_whitelist) {
+		foreach my $entry (@{$self->whitelist}) {
+			if ($entry eq $field) {
+				return 1;
+			}
+		}
+		return 0;
+	}
+}
+
 
 sub _request_statements {
 	my ($self, $model, $r, $subj) = @_;
