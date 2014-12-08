@@ -74,8 +74,7 @@ $r->request(HTTP::Request->new(GET => $requestURI, [Accept => 'application/rdf+x
 }
 
 
-TODO: {
-	local $TODO = "Failing tests for blacklist";
+{
 	my $g = RDF::Generator::HTTP->new(message => $r, blacklist => ['Last-Modified', 'Accept']);
 	isa_ok($g, 'RDF::Generator::HTTP');
 	my $model = $g->generate;
@@ -103,8 +102,7 @@ TODO: {
 }
 
 
-TODO: {
-	local $TODO = "Failing tests for whitelist";
+{
 	my $g = RDF::Generator::HTTP->new(message => $r, whitelist => ['Date', 'Content-Type', 'Expires']);
 	isa_ok($g, 'RDF::Generator::HTTP');
 	my $model = $g->generate;
