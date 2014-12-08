@@ -20,6 +20,8 @@ has blacklist => (is => 'rw', isa => ArrayRef[Str], predicate => 'has_blacklist'
 
 has whitelist => (is => 'rw', isa => ArrayRef[Str], predicate => 'has_whitelist');
 
+has graph => (is => 'rw', isa => InstanceOf['RDF::Trine::Node::Resource']);
+
 has ns => (is => 'ro', isa => InstanceOf['URI::NamespaceMap'], lazy => 1, builder => '_build_namespacemap');
 
 sub _build_namespacemap {
@@ -50,7 +52,10 @@ sub generate {
 		$self->message->headers->scan(sub {
 				  my ($field, $value) = @_;
 				  if ($self->ok_to_add($field)) {
-					  $model->add_statement(statement($ressubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
+					  $model->add_statement(statement($ressubj, 
+																 iri($ns->httph->uri(_fix_headers($field))), 
+																 literal($value),
+																 $self->graph));
 				  }
 			   });
 		if ($self->message->request) {
