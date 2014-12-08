@@ -45,7 +45,7 @@ my $httph = RDF::Trine::Namespace->new('http://www.w3.org/2007/ont/httph#');
 {
 	my $r = HTTP::Response->new(200, "OK", $h, "<> a <http://example.org/Dahut> .");
 	my $requestURI = 'http://www.example.invalid/';
-	$r->request(HTTP::Request->new(GET => $requestURI));
+	$r->request(HTTP::Request->new(GET => $requestURI, [Accept => 'application/rdf+xml']));
 	my $g = RDF::Generator::HTTP->new(message => $r);
 	isa_ok($g, 'RDF::Generator::HTTP');
 	my $model = $g->generate;
@@ -55,16 +55,17 @@ my $httph = RDF::Trine::Namespace->new('http://www.w3.org/2007/ont/httph#');
 	my $pattern = RDF::Trine::Pattern->new(
 														statement(variable('req'), $rdf->type, $http->RequestMessage),
 														statement(variable('req'), $http->method, literal('GET')),
+														statement(variable('req'), $httph->accept, literal('application/rdf+xml')),
 														statement(variable('req'), $http->requestURI, iri($requestURI)),
 														statement(variable('req'), $http->hasResponse, variable('res')),
 														statement(variable('res'), $rdf->type, $http->ResponseMessage),
-														statement(variable('res'), $http->status, literal('200'),
+														statement(variable('res'), $http->status, literal('200')),
 														statement(variable('res'), $httph->date, literal('Thu, 14 Feb 2014 20:48:33 GMT')),
 														statement(variable('res'), $httph->content_type, literal('text/turtle;charset=UTF-8')),
 														statement(variable('res'), $httph->expires, literal('Thu, 14 Feb 2014 21:48:33 GMT')),
 														statement(variable('res'), $httph->last_modified, literal('Thu, 07 Feb 2014 20:48:33 GMT')),
-														statement(variable('res'), $httph->server, literal('Dahutomatic/4.2'))
-);
+														statement(variable('res'), $httph->server, literal('Dahutomatic/4.2')));
+
 	pattern_ok($pattern, 'Full pattern found');
 }
 
