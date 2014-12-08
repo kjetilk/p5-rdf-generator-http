@@ -40,7 +40,6 @@ sub generate {
 		$self->_request_statements($model, $self->message, $reqsubj);
 		$self->message->headers->scan(sub {
 				my ($field, $value) = @_;
-				if (
 				$model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
 			 });
 	} elsif ($self->message->isa('HTTP::Response')) {
