@@ -103,6 +103,39 @@ TODO: {
 }
 
 
+TODO: {
+	local $TODO = "Failing tests for whitelist";
+	my $g = RDF::Generator::HTTP->new(message => $r, whitelist => ['Date', 'Content-Type', 'Expires']);
+	isa_ok($g, 'RDF::Generator::HTTP');
+	my $model = $g->generate;
+	isa_ok($model, 'RDF::Trine::Model');
+	has_predicate($httph->date->uri_value, $model, 'Date Predicate URI is found');
+	has_predicate($httph->content_type->uri_value, $model, 'Content-Type Predicate URI is found');
+	has_literal('text/turtle;charset=UTF-8', undef, undef, $model, 'Content-Type literal is found');
+	hasnt_literal('Thu, 07 Feb 2014 20:48:33 GMT', undef, undef, $model, 'Last-Modified literal string is not found');
+	pattern_target($model);
+	my $pattern = RDF::Trine::Pattern->new(
+														statement(variable('req'), $rdf->type, $http->RequestMessage),
+														statement(variable('req'), $http->method, literal('GET')),
+														statement(variable('req'), $http->requestURI, iri($requestURI)),
+														statement(variable('req'), $http->hasResponse, variable('res')),
+														statement(variable('res'), $rdf->type, $http->ResponseMessage),
+														statement(variable('res'), $http->status, literal('200')),
+														statement(variable('res'), $httph->date, literal('Thu, 14 Feb 2014 20:48:33 GMT')),
+														statement(variable('res'), $httph->content_type, literal('text/turtle;charset=UTF-8')),
+														statement(variable('res'), $httph->expires, literal('Thu, 14 Feb 2014 21:48:33 GMT'))
+													  );
+
+	pattern_ok($pattern, 'Rest of whitelist pattern found');
+
+	pattern_fail(
+					 statement(variable('req'), $httph->accept, literal('application/rdf+xml')),
+					 statement(variable('res'), $httph->last_modified, literal('Thu, 07 Feb 2014 20:48:33 GMT')),
+					 statement(variable('res'), $httph->server, literal('Dahutomatic/4.2')),
+					 'Banned not found');
+
+
+}
 
 
 
