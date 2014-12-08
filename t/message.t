@@ -42,10 +42,12 @@ my $rdf = RDF::Trine::Namespace->new('http://www.w3.org/1999/02/22-rdf-syntax-ns
 my $http = RDF::Trine::Namespace->new('http://www.w3.org/2007/ont/http#');
 my $httph = RDF::Trine::Namespace->new('http://www.w3.org/2007/ont/httph#');
 
+# Setting up the response
+my $r = HTTP::Response->new(200, "OK", $h, "<> a <http://example.org/Dahut> .");
+my $requestURI = 'http://www.example.invalid/';
+$r->request(HTTP::Request->new(GET => $requestURI, [Accept => 'application/rdf+xml']));
+
 {
-	my $r = HTTP::Response->new(200, "OK", $h, "<> a <http://example.org/Dahut> .");
-	my $requestURI = 'http://www.example.invalid/';
-	$r->request(HTTP::Request->new(GET => $requestURI, [Accept => 'application/rdf+xml']));
 	my $g = RDF::Generator::HTTP->new(message => $r);
 	isa_ok($g, 'RDF::Generator::HTTP');
 	my $model = $g->generate;
@@ -66,10 +68,13 @@ my $httph = RDF::Trine::Namespace->new('http://www.w3.org/2007/ont/httph#');
 														statement(variable('res'), $httph->expires, literal('Thu, 14 Feb 2014 21:48:33 GMT')),
 														statement(variable('res'), $httph->last_modified, literal('Thu, 07 Feb 2014 20:48:33 GMT')),
 														statement(variable('res'), $httph->server, literal('Dahutomatic/4.2'))
-);
+													  );
 
 	pattern_ok($pattern, 'Full pattern found');
 }
+
+
+
 
 
 done_testing;
