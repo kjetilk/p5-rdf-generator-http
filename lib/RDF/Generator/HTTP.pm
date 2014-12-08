@@ -12,9 +12,13 @@ use Moo;
 use Carp qw(carp);
 use RDF::Trine qw(statement blank iri literal);
 use URI::NamespaceMap;
-use Types::Standard qw(InstanceOf);
+use Types::Standard qw(InstanceOf ArrayRef Str);
 
 has message => (is => 'ro', isa => InstanceOf['HTTP::Message'], required => 1);
+
+has blacklist => (is => 'rw', isa => ArrayRef[Str]);
+
+has whitelist => (is => 'rw', isa => ArrayRef[Str]);
 
 has ns => (is => 'ro', isa => InstanceOf['URI::NamespaceMap'], lazy => 1, builder => '_build_namespacemap');
 
@@ -36,6 +40,7 @@ sub generate {
 		$self->_request_statements($model, $self->message, $reqsubj);
 		$self->message->headers->scan(sub {
 				my ($field, $value) = @_;
+				if (
 				$model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
 			 });
 	} elsif ($self->message->isa('HTTP::Response')) {
@@ -104,10 +109,13 @@ Moose-style constructor function.
 
 These attributes may be passed to the constructor.
 
+=over
+
 =item C<< message >>
 
 A L<HTTP::Message> (or subclass thereof) object to generate RDF for. Required.
 
+=back
 
 =head1 BUGS
 
