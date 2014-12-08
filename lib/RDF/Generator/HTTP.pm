@@ -36,21 +36,21 @@ sub generate {
 		$self->_request_statements($model, $self->message, $reqsubj);
 		$self->message->headers->scan(sub {
 				my ($field, $value) = @_;
-				$model->add_statement(statement($reqsubj, iri($ns->httph->iri(_fix_headers($field))), literal($value)));
+				$model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
 			 });
 	} elsif ($self->message->isa('HTTP::Response')) {
 		$model->add_statement(statement($ressubj, iri($ns->uri('rdf:type')), iri($ns->uri('http:ResponseMessage'))));
 		$model->add_statement(statement($ressubj, iri($ns->uri('http:status')), literal($self->message->code)));
 		$self->message->headers->scan(sub {
 				  my ($field, $value) = @_;
-				  $model->add_statement(statement($reqsubj, iri($ns->httph->iri(_fix_headers($field))), literal($value)));
+				  $model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
 			   });
 		if ($self->message->request) {
 			$model->add_statement(statement($reqsubj, iri($ns->uri('http:hasResponse')), $ressubj));
 			$self->_request_statements($model, $self->message->request, $reqsubj);
 			$self->message->request->headers->scan(sub {
 				my ($field, $value) = @_;
-				$model->add_statement(statement($reqsubj, iri($ns->httph->iri(_fix_headers($field))), literal($value)));
+				$model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
 			 });
 		}
 	} else {
@@ -69,7 +69,7 @@ sub _request_statements {
 
 sub _fix_headers {
 	my $field = shift;
-	$field =~ tr/_/-/;
+	$field =~ tr/-/_/;
 	$field = lc $field;
 	return $field;
 }
