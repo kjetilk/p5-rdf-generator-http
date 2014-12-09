@@ -135,8 +135,7 @@ $r->request(HTTP::Request->new(GET => $requestURI, [Accept => 'application/rdf+x
 
 }
 
-TODO: {
-	local $TODO = "Failing tests for graph name";
+{
 	my $g = RDF::Generator::HTTP->new(message => $r, graph => iri('http://example.org/graphname'));
 	isa_ok($g, 'RDF::Generator::HTTP');
 	my $model = $g->generate;
@@ -145,6 +144,8 @@ TODO: {
 	has_predicate($httph->content_type->uri_value, $model, 'Content-Type Predicate URI is found');
 	has_literal('text/turtle;charset=UTF-8', undef, undef, $model, 'Content-Type literal is found');
 	is($model->size, 12, 'Model has the correct number of triples');
+	is($model->count_statements(undef, undef, undef, iri('http://example.org/graphname')), 
+		12, 'Model has the correct number of triples');
 	my @graphs = $model->get_contexts->get_all;
 	is(scalar @graphs, 1, 'Just one graph');
 	is($graphs[0]->uri_value, 'http://example.org/graphname', 'Correct graph name');
