@@ -144,6 +144,19 @@ RDF::Generator::HTTP - Generate RDF from a HTTP message
 
 =head1 SYNOPSIS
 
+   use LWP::UserAgent;
+   my $ua = LWP::UserAgent->new;
+   my $response = $ua->get('http://metacpan.org/');
+
+   use RDF::Generator::HTTP;
+	use RDF::Trine qw(iri);
+	my $g = RDF::Generator::HTTP->new(message => $response,
+                                     graph => iri('http://example.org/graphname'),
+                                     blacklist => ['Last-Modified', 'Accept']);
+	my $model = $g->generate;
+   print $model->size;
+
+
 =head1 DESCRIPTION
 
 =head2 Constructor
@@ -166,14 +179,83 @@ These attributes may be passed to the constructor.
 
 A L<HTTP::Message> (or subclass thereof) object to generate RDF for. Required.
 
+=item C<< blacklist >>
+
+An C<ArrayRef> of header field names that you do not want to see in the output.
+
+=item C<< whitelist >>
+
+An C<ArrayRef> of the only header field names that you want to see in the
+output. The whitelist will be ignored if the blacklist is set.
+
+=item C<< graph >>
+
+You may pass an optional graph name to be used for all triples in the
+output. This must be an object of L<RDF::Trine::Node::Resource>.
+
+=item C<< ns >>
+
+An L<URI::NamespaceMap> object containing namespace prefixes used in
+the module. You should probably not override this even though you can.
+
 =back
+
+=head2 Methods
+
+The above attributes all have read-accessors by the same
+name. C<blacklist>, C<whitelist> and C<graph> also has writers and
+predicates, which is used to test if the attribute has been set, by
+prefixing C<has_> to the attribute name.
+
+This class has two methods:
+
+=over
+
+=item C<< generate ( [ $model ] ) >>
+
+This method will generate the RDF. It may optionally take an
+L<RDF::Trine::Model> as parameter. If it exists, the RDF will be added
+to this model, if not, a new Memory model will be created and
+returned.
+
+=item C<< ok_to_add ( $field ) >>
+
+This method will look up in the blacklists and whitelists and return
+true if the given field and value may be added to the model.
+
+=back
+
+
+=head1 NOTES
+
+=head2 HTTP Vocabularies
+
+
+There have been many efforts to create HTTP vocabularies (or ontologies), 
+where the most elaborate and complete is the 
+L<HTTP Vocabulary in RDF 1.0|http://www.w3.org/TR/HTTP-in-RDF/>. 
+Nevertheless, I decided not to support this, but rather support an older 
+and much less complete vocabulary that has been in the 
+L<Tabulator|https://github.com/linkeddata/tabulator-firefox> project, 
+with the namespace prefixes L<http://www.w3.org/2007/ont/http#> and 
+L<http://www.w3.org/2007/ont/httph#>. The problem of modelling HTTP 
+is that headers modify each other, so if you want to record the HTTP 
+headers so that they can be used in an actual HTTP dialogue afterwards, 
+they have to be in a container so that the order can be reconstructed. 
+Moreover, there is a lot of microstructure in the values, and that 
+also adds complexity if you want to translate all that to RDF. That's 
+what the former vocabulary does. However, for now, all the author wants 
+to do is to record them, and then neither of these concerns are important. 
+Therefore, I opted to go for a much simpler vocabulary, where each field 
+is a simple predicate. That is not to say that the former approach isn't valid, 
+it is just not something I need now.
 
 =head1 BUGS
 
+This is a very early release, but it works for the author.
+
 Please report any bugs to
 L<https://github.com/kjetilk/p5-rdf-generator-http/issues>.
-
-=head1 SEE ALSO
 
 =head1 AUTHOR
 
