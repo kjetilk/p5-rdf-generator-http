@@ -158,6 +158,12 @@ RDF::Generator::HTTP - Generate RDF from a HTTP message
 
 =head1 DESCRIPTION
 
+This module simply takes a L<HTTP::Message> object, and based on its
+content, especially the content the L<HTTP::Header> object(s) it
+contains, creates a simple RDF representation of the contents. It is
+useful chiefly for recording data when crawling resources on the Web,
+but it may also have other uses.
+
 =head2 Constructor
 
 =over
