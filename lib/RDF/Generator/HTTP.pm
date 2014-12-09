@@ -20,7 +20,7 @@ has blacklist => (is => 'rw', isa => ArrayRef[Str], predicate => 'has_blacklist'
 
 has whitelist => (is => 'rw', isa => ArrayRef[Str], predicate => 'has_whitelist');
 
-has graph => (is => 'rw', isa => InstanceOf['RDF::Trine::Node::Resource']);
+has graph => (is => 'rw', isa => InstanceOf['RDF::Trine::Node::Resource'], predicate => 'has_graph');
 
 has ns => (is => 'ro', isa => InstanceOf['URI::NamespaceMap'], lazy => 1, builder => '_build_namespacemap');
 
@@ -37,34 +37,50 @@ sub generate {
 	my $model = shift || RDF::Trine::Model->temporary_model;
 	my $reqsubj = blank();
 	my $ressubj = blank();
+	my @graph = $self->has_graph ? ($self->graph) : ();
 	my $ns = $self->ns;
 	if ($self->message->isa('HTTP::Request')) {
 		$self->_request_statements($model, $self->message, $reqsubj);
 		$self->message->headers->scan(sub {
 													my ($field, $value) = @_;
 													if ($self->ok_to_add($field)) {
-														$model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
+														$model->add_statement(statement($reqsubj, 
+																								  iri($ns->httph->uri(_fix_headers($field))), 
+																								  literal($value),
+																								  @graph));
 													}
 												});
 	} elsif ($self->message->isa('HTTP::Response')) {
-		$model->add_statement(statement($ressubj, iri($ns->uri('rdf:type')), iri($ns->uri('http:ResponseMessage'))));
-		$model->add_statement(statement($ressubj, iri($ns->uri('http:status')), literal($self->message->code)));
+		$model->add_statement(statement($ressubj, 
+												  iri($ns->uri('rdf:type')), 
+												  iri($ns->uri('http:ResponseMessage')),
+												  @graph));
+		$model->add_statement(statement($ressubj, 
+												  iri($ns->uri('http:status')), 
+												  literal($self->message->code),
+												  @graph));
 		$self->message->headers->scan(sub {
 													my ($field, $value) = @_;
 													if ($self->ok_to_add($field)) {
 														$model->add_statement(statement($ressubj, 
 																								  iri($ns->httph->uri(_fix_headers($field))), 
 																								  literal($value),
-																								  $self->graph));
+																								  @graph));
 													}
 												});
 		if ($self->message->request) {
-			$model->add_statement(statement($reqsubj, iri($ns->uri('http:hasResponse')), $ressubj));
+			$model->add_statement(statement($reqsubj, 
+													  iri($ns->uri('http:hasResponse')), 
+													  $ressubj,
+													  @graph));
 			$self->_request_statements($model, $self->message->request, $reqsubj);
 			$self->message->request->headers->scan(sub {
 																	my ($field, $value) = @_;
 																	if ($self->ok_to_add($field)) {
-																		$model->add_statement(statement($reqsubj, iri($ns->httph->uri(_fix_headers($field))), literal($value)));
+																		$model->add_statement(statement($reqsubj, 
+																												  iri($ns->httph->uri(_fix_headers($field))), 
+																												  literal($value),
+																												  @graph));
 																	}
 																});
 		}
@@ -101,9 +117,10 @@ sub ok_to_add {
 sub _request_statements {
 	my ($self, $model, $r, $subj) = @_;
 	my $ns = $self->ns;
-	$model->add_statement(statement($subj, iri($ns->uri('rdf:type')), iri($ns->uri('http:RequestMessage'))));
-	$model->add_statement(statement($subj, iri($ns->uri('http:method')), literal('GET')));
-	$model->add_statement(statement($subj, iri($ns->uri('http:requestURI')), iri($r->uri)));
+	my @graph = $self->has_graph ? ($self->graph) : ();
+	$model->add_statement(statement($subj, iri($ns->uri('rdf:type')), iri($ns->uri('http:RequestMessage')), @graph));
+	$model->add_statement(statement($subj, iri($ns->uri('http:method')), literal('GET'), @graph));
+	$model->add_statement(statement($subj, iri($ns->uri('http:requestURI')), iri($r->uri), @graph));
 }
 
 sub _fix_headers {
