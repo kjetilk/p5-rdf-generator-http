@@ -1,9 +1,8 @@
+package RDF::Generator::HTTP;
+
 use 5.010001;
 use strict;
 use warnings;
-
-package RDF::Generator::HTTP;
-
 
 our $AUTHORITY = 'cpan:KJETILK';
 our $VERSION   = '0.001';
