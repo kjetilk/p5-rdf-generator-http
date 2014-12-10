@@ -148,11 +148,11 @@ RDF::Generator::HTTP - Generate RDF from a HTTP message
    my $response = $ua->get('http://metacpan.org/');
 
    use RDF::Generator::HTTP;
-	use RDF::Trine qw(iri);
-	my $g = RDF::Generator::HTTP->new(message => $response,
+   use RDF::Trine qw(iri);
+   my $g = RDF::Generator::HTTP->new(message => $response,
                                      graph => iri('http://example.org/graphname'),
                                      blacklist => ['Last-Modified', 'Accept']);
-	my $model = $g->generate;
+   my $model = $g->generate;
    print $model->size;
 
 
