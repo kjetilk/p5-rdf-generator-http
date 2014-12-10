@@ -26,8 +26,8 @@ has ns => (is => 'ro', isa => InstanceOf['URI::NamespaceMap'], lazy => 1, builde
 sub _build_namespacemap {
 	my $self = shift;
 	return URI::NamespaceMap->new({ rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-											  http => 'http://www.w3.org/2007/ont/http#',
-											  httph => 'http://www.w3.org/2007/ont/httph#' });
+	                                http => 'http://www.w3.org/2007/ont/http#',
+	                                httph => 'http://www.w3.org/2007/ont/httph#' });
 }
 
 
@@ -41,47 +41,47 @@ sub generate {
 	if ($self->message->isa('HTTP::Request')) {
 		$self->_request_statements($model, $self->message, $reqsubj);
 		$self->message->headers->scan(sub {
-													my ($field, $value) = @_;
-													if ($self->ok_to_add($field)) {
-														$model->add_statement(statement($reqsubj, 
-																								  iri($ns->httph->uri(_fix_headers($field))), 
-																								  literal($value),
-																								  @graph));
-													}
-												});
+			                              my ($field, $value) = @_;
+			                              if ($self->ok_to_add($field)) {
+				                              $model->add_statement(statement($reqsubj, 
+				                                                              iri($ns->httph->uri(_fix_headers($field))), 
+				                                                              literal($value),
+				                                                              @graph));
+			                              }
+		                              });
 	} elsif ($self->message->isa('HTTP::Response')) {
 		$model->add_statement(statement($ressubj, 
-												  iri($ns->uri('rdf:type')), 
-												  iri($ns->uri('http:ResponseMessage')),
-												  @graph));
+		                                iri($ns->uri('rdf:type')), 
+		                                iri($ns->uri('http:ResponseMessage')),
+		                                @graph));
 		$model->add_statement(statement($ressubj, 
-												  iri($ns->uri('http:status')), 
-												  literal($self->message->code),
-												  @graph));
+		                                iri($ns->uri('http:status')), 
+		                                literal($self->message->code),
+		                                @graph));
 		$self->message->headers->scan(sub {
-													my ($field, $value) = @_;
-													if ($self->ok_to_add($field)) {
-														$model->add_statement(statement($ressubj, 
-																								  iri($ns->httph->uri(_fix_headers($field))), 
-																								  literal($value),
-																								  @graph));
-													}
-												});
+			                              my ($field, $value) = @_;
+			                              if ($self->ok_to_add($field)) {
+				                              $model->add_statement(statement($ressubj, 
+				                                                              iri($ns->httph->uri(_fix_headers($field))), 
+				                                                              literal($value),
+				                                                              @graph));
+			                              }
+		                              });
 		if ($self->message->request) {
 			$model->add_statement(statement($reqsubj, 
-													  iri($ns->uri('http:hasResponse')), 
-													  $ressubj,
-													  @graph));
+			                                iri($ns->uri('http:hasResponse')), 
+			                                $ressubj,
+			                                @graph));
 			$self->_request_statements($model, $self->message->request, $reqsubj);
 			$self->message->request->headers->scan(sub {
-																	my ($field, $value) = @_;
-																	if ($self->ok_to_add($field)) {
-																		$model->add_statement(statement($reqsubj, 
-																												  iri($ns->httph->uri(_fix_headers($field))), 
-																												  literal($value),
-																												  @graph));
-																	}
-																});
+				                                       my ($field, $value) = @_;
+				                                       if ($self->ok_to_add($field)) {
+					                                       $model->add_statement(statement($reqsubj, 
+						                                         iri($ns->httph->uri(_fix_headers($field))), 
+						                                         literal($value),
+						                                         @graph));
+				                                       }
+			                                       });
 		}
 	} else {
 		carp "Don't know what to do with message object of class " . ref($self->message);
@@ -128,7 +128,7 @@ sub _fix_headers {
 	$field = lc $field;
 	return $field;
 }
-	  
+
 
 1;
 __END__
