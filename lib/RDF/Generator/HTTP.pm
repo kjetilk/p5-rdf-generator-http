@@ -143,17 +143,21 @@ RDF::Generator::HTTP - Generate RDF from a HTTP message
 
 =head1 SYNOPSIS
 
-   use LWP::UserAgent;
-   my $ua = LWP::UserAgent->new;
-   my $response = $ua->get('http://metacpan.org/');
+  use LWP::UserAgent;
+  my $ua = LWP::UserAgent->new;
+  my $response = $ua->get('http://search.cpan.org/');
 
-   use RDF::Generator::HTTP;
-   use RDF::Trine qw(iri);
-   my $g = RDF::Generator::HTTP->new(message => $response,
-                                     graph => iri('http://example.org/graphname'),
-                                     blacklist => ['Last-Modified', 'Accept']);
-   my $model = $g->generate;
-   print $model->size;
+  use RDF::Generator::HTTP;
+  use RDF::Trine qw(iri);
+  my $g = RDF::Generator::HTTP->new(message => $response,
+                                    graph => iri('http://example.org/graphname'),
+                                    blacklist => ['Last-Modified', 'Accept']);
+  my $model = $g->generate;
+  print $model->size;
+  my $s   = RDF::Trine::Serializer->new('turtle', namespaces =>
+                                        { httph => 'http://www.w3.org/2007/ont/httph#',
+                                          http => 'http://www.w3.org/2007/ont/http#' } );
+  $s->serialize_model_to_file(\*STDOUT, $model);
 
 
 =head1 DESCRIPTION
@@ -163,6 +167,7 @@ content, especially the content the L<HTTP::Header> object(s) it
 contains, creates a simple RDF representation of the contents. It is
 useful chiefly for recording data when crawling resources on the Web,
 but it may also have other uses.
+
 
 =head2 Constructor
 
@@ -229,6 +234,36 @@ This method will look up in the blacklists and whitelists and return
 true if the given field and value may be added to the model.
 
 =back
+
+=head1 EXAMPLES
+
+For an example of what the module can be used to create, consider the
+example in the L<SYNOPSIS>, which at the time of this writing outputs
+the following Turtle:
+
+  @prefix http: <http://www.w3.org/2007/ont/http#> .
+  @prefix httph: <http://www.w3.org/2007/ont/httph#> .
+
+  [] a http:RequestMessage ;
+        http:hasResponse [
+                a http:ResponseMessage ;
+                http:status "200" ;
+                httph:client_date "Sun, 14 Dec 2014 21:28:21 GMT" ;
+                httph:client_peer "207.171.7.59:80" ;
+                httph:client_response_num "1" ;
+                httph:connection "close" ;
+                httph:content_length "3643" ;
+                httph:content_type "text/html" ;
+                httph:date "Sun, 14 Dec 2014 21:28:21 GMT" ;
+                httph:link "<http://search.cpan.org/uploads.rdf>; rel=\"alternate\"; title=\"RSS 1.0\"; type=\"application/rss+xml\"", "<http://st.pimg.net/tucs/opensearch.xml>; rel=\"search\"; title=\"SearchCPAN\"; type=\"application/opensearchdescription+xml\"", "<http://st.pimg.net/tucs/print.css>; media=\"print\"; rel=\"stylesheet\"; type=\"text/css\"", "<http://st.pimg.net/tucs/style.css?3>; rel=\"stylesheet\"; type=\"text/css\"" ;
+                httph:server "Plack/Starman (Perl)" ;
+                httph:title "The CPAN Search Site - search.cpan.org" ;
+                httph:x_proxy "proxy2"
+        ] ;
+        http:method "GET" ;
+        http:requestURI <http://search.cpan.org/> ;
+        httph:user_agent "libwww-perl/6.05" .
+
 
 
 =head1 NOTES
