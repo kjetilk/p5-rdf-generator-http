@@ -1,5 +1,9 @@
 # This file acts as the project's changelog.
 
+`RDF-Generator-HTTP 0.002 cpan:KJETILK`
+	issued  2014-12-14;
+	label   "Improve documentation".
+
 `RDF-Generator-HTTP 0.001 cpan:KJETILK`
 	issued  2014-10-08;
 	label   "Initial release".
