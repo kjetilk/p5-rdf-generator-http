@@ -238,7 +238,7 @@ true if the given field and value may be added to the model.
 =head1 EXAMPLES
 
 For an example of what the module can be used to create, consider the
-example in the L<SYNOPSIS>, which at the time of this writing outputs
+example in the L</SYNOPSIS>, which at the time of this writing outputs
 the following Turtle:
 
   @prefix http: <http://www.w3.org/2007/ont/http#> .
