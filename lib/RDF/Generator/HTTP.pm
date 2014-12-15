@@ -189,7 +189,8 @@ Moose-style constructor function.
 
 =head2 Attributes
 
-These attributes may be passed to the constructor.
+These attributes may be passed to the constructor to set them, or
+called like methods to get them.
 
 =over
 
