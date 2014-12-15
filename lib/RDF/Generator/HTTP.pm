@@ -216,6 +216,16 @@ output. This must be an object of L<RDF::Trine::Node::Resource>.
 An L<URI::NamespaceMap> object containing namespace prefixes used in
 the module. You should probably not override this even though you can.
 
+=item C<< request_subject >>
+
+An L<RDF::Trine::Node> object containing the subject of any statements
+describing requests. If unset, it will default to a blank node.
+
+=item C<< response_subject >>
+
+An L<RDF::Trine::Node> object containing the subject of any statements
+describing responses. If unset, it will default to a blank node.
+
 =back
 
 =head2 Methods
