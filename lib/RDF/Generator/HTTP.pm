@@ -23,6 +23,14 @@ has graph => (is => 'rw', isa => InstanceOf['RDF::Trine::Node::Resource'], predi
 
 has ns => (is => 'ro', isa => InstanceOf['URI::NamespaceMap'], lazy => 1, builder => '_build_namespacemap');
 
+has request_subject => (is => 'ro',
+								isa => InstanceOf['RDF::Trine::Node'],
+								default => sub { return blank });
+
+has response_subject => (is => 'ro',
+								 isa => InstanceOf['RDF::Trine::Node'],
+								 default => sub { return blank });
+
 sub _build_namespacemap {
 	my $self = shift;
 	return URI::NamespaceMap->new({ rdf => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
@@ -34,8 +42,8 @@ sub _build_namespacemap {
 sub generate {
 	my $self = shift;	
 	my $model = shift || RDF::Trine::Model->temporary_model;
-	my $reqsubj = blank();
-	my $ressubj = blank();
+	my $reqsubj = $self->request_subject;
+	my $ressubj = $self->response_subject;
 	my @graph = $self->has_graph ? ($self->graph) : ();
 	my $ns = $self->ns;
 	if ($self->message->isa('HTTP::Request')) {
