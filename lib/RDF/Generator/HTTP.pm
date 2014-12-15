@@ -21,8 +21,6 @@ has whitelist => (is => 'rw', isa => ArrayRef[Str], predicate => 'has_whitelist'
 
 has graph => (is => 'rw', isa => InstanceOf['RDF::Trine::Node::Resource'], predicate => 'has_graph');
 
-has ns => (is => 'ro', isa => InstanceOf['URI::NamespaceMap'], lazy => 1, builder => '_build_namespacemap');
-
 has request_subject => (is => 'ro',
 								isa => InstanceOf['RDF::Trine::Node'],
 								default => sub { return blank });
@@ -30,6 +28,8 @@ has request_subject => (is => 'ro',
 has response_subject => (is => 'ro',
 								 isa => InstanceOf['RDF::Trine::Node'],
 								 default => sub { return blank });
+
+has ns => (is => 'ro', isa => InstanceOf['URI::NamespaceMap'], lazy => 1, builder => '_build_namespacemap');
 
 sub _build_namespacemap {
 	my $self = shift;
