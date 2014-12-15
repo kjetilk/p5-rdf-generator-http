@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:KJETILK';
-our $VERSION   = '0.002';
+our $VERSION   = '0.003';
 
 use Moo;
 use Carp qw(carp);
