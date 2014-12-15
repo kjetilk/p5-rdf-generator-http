@@ -1,5 +1,14 @@
 # This file acts as the project's changelog.
 
+`RDF-Generator-HTTP 0.003 cpan:KJETILK`
+	issued  2014-12-15;
+	label   "Attributes for subjects".
+	changeset [
+                     dcs:versus `RDF-Generator-HTTP 0.002 cpan:KJETILK`;
+                     item "Fix internal link"^^Documentation;
+                     item "Create attributes to set and access the subjects of messages."^^Addition;
+                  ].
+
 `RDF-Generator-HTTP 0.002 cpan:KJETILK`
 	issued  2014-12-14;
 	label   "Improve documentation".
